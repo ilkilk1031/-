@@ -16,7 +16,7 @@ python -m PyInstaller installer/ppt_renderer_ui.spec --noconfirm --clean
 mkdir -p dist/install
 cp dist/*.whl dist/install/ || true
 cp -r dist/ppt-renderer dist/install/ || true
-cp -r dist/ppt-renderer-ui dist/install/ || true
+cp dist/ppt-renderer-ui* dist/install/ || true
 cp README.md dist/install/
 
 echo "Installer artifacts are available under dist/install"

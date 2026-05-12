@@ -6,7 +6,7 @@ Generate distributable installation artifacts for the PPT automation program.
 ## Build outputs
 After running the build script, artifacts are created in `dist/install/`:
 - Python wheel (`*.whl`) for pip installation
-- Standalone executable bundles (`dist/ppt-renderer/`, `dist/ppt-renderer-ui/`) from PyInstaller
+- Standalone executable outputs (`dist/ppt-renderer/` and `dist/ppt-renderer-ui.exe`) from PyInstaller
 - Project `README.md`
 
 ## Build command
@@ -66,7 +66,7 @@ The spec now falls back to `SPEC` and a default path, then resolves from that lo
 
 ### 3) Desktop UI executable
 ```bash
-./dist/install/ppt-renderer-ui/ppt-renderer-ui
+./dist/install/ppt-renderer-ui.exe
 ```
 This launches the desktop UI app directly (no CLI args required).
 
@@ -78,3 +78,5 @@ python -m ppt_renderer.gui
 Or add your Scripts directory to PATH and reopen terminal.
 
 If you previously built before pulling updates, delete old artifacts first (`build/`, `dist/`) and rebuild. The script now cleans these automatically.
+
+If you saw `Failed to load Python DLL` when double-clicking old UI builds, rebuild with this updated spec and use `dist/install/ppt-renderer-ui.exe`.
