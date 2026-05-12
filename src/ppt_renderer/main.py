@@ -28,6 +28,9 @@ def _resolve_relative_image_paths(payload: dict[str, Any], input_dir: Path) -> d
             candidate = Path(raw_path)
             if candidate.is_absolute():
                 continue
+            if candidate.exists():
+                element["path"] = str(candidate.resolve())
+                continue
             element["path"] = str((input_dir / candidate).resolve())
     return payload
 
