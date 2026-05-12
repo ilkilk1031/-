@@ -58,3 +58,8 @@ The spec now uses absolute paths based on its own file location, so rerun:
 bash installer/build_installer.sh
 ```
 
+
+## Error: `NameError: __file__ is not defined` in spec
+Some PyInstaller runs do not inject `__file__` into the spec namespace.
+The spec now falls back to `SPEC` and a default path, then resolves from that location.
+

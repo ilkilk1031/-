@@ -4,7 +4,8 @@ from pathlib import Path
 
 block_cipher = None
 
-SPEC_DIR = Path(__file__).resolve().parent
+_spec_ref = globals().get("__file__") or globals().get("SPEC") or "installer/ppt_renderer.spec"
+SPEC_DIR = Path(_spec_ref).resolve().parent
 PROJECT_ROOT = SPEC_DIR.parent
 SCRIPT_PATH = PROJECT_ROOT / "src" / "ppt_renderer" / "cli.py"
 SAMPLE_INPUT_PATH = PROJECT_ROOT / "examples" / "sample_input.json"
