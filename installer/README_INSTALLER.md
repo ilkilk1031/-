@@ -49,3 +49,12 @@ python -m PyInstaller installer/ppt_renderer.spec --noconfirm
 ```
 
 The build script already uses module form so PATH setup for Scripts is not required.
+
+## Error: `installer/src/ppt_renderer/cli.py not found`
+This happens when PyInstaller resolves relative paths from the wrong working directory.
+
+The spec now uses absolute paths based on its own file location, so rerun:
+```bash
+bash installer/build_installer.sh
+```
+

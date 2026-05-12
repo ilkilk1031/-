@@ -1,13 +1,20 @@
 # -*- mode: python ; coding: utf-8 -*-
 
+from pathlib import Path
+
 block_cipher = None
+
+SPEC_DIR = Path(__file__).resolve().parent
+PROJECT_ROOT = SPEC_DIR.parent
+SCRIPT_PATH = PROJECT_ROOT / "src" / "ppt_renderer" / "cli.py"
+SAMPLE_INPUT_PATH = PROJECT_ROOT / "examples" / "sample_input.json"
 
 
 a = Analysis(
-    ['src/ppt_renderer/cli.py'],
-    pathex=['src'],
+    [str(SCRIPT_PATH)],
+    pathex=[str(PROJECT_ROOT / "src")],
     binaries=[],
-    datas=[('examples/sample_input.json', 'examples')],
+    datas=[(str(SAMPLE_INPUT_PATH), "examples")],
     hiddenimports=['ppt_renderer'],
     hookspath=[],
     hooksconfig={},
