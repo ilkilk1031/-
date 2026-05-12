@@ -8,7 +8,6 @@ from tkinter import filedialog, messagebox
 from tkinter.scrolledtext import ScrolledText
 
 from ppt_renderer.main import generate_ppt
-from .main import generate_ppt
 
 DEFAULT_SLIDE_SIZE = {"width": 12192000, "height": 6858000}
 

@@ -7,9 +7,11 @@ cd "$ROOT_DIR"
 python -m pip install -U pip
 python -m pip install -e .[dev] pyinstaller build
 
+rm -rf build dist
+
 python -m build
-python -m PyInstaller installer/ppt_renderer.spec --noconfirm
-python -m PyInstaller installer/ppt_renderer_ui.spec --noconfirm
+python -m PyInstaller installer/ppt_renderer.spec --noconfirm --clean
+python -m PyInstaller installer/ppt_renderer_ui.spec --noconfirm --clean
 
 mkdir -p dist/install
 cp dist/*.whl dist/install/ || true

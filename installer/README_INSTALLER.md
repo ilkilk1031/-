@@ -7,7 +7,6 @@ Generate distributable installation artifacts for the PPT automation program.
 After running the build script, artifacts are created in `dist/install/`:
 - Python wheel (`*.whl`) for pip installation
 - Standalone executable bundles (`dist/ppt-renderer/`, `dist/ppt-renderer-ui/`) from PyInstaller
-- Standalone executable bundle (`dist/ppt-renderer/`) from PyInstaller
 - Project `README.md`
 
 ## Build command
@@ -77,3 +76,5 @@ If `ppt-renderer-ui` is not found after install, run module form:
 python -m ppt_renderer.gui
 ```
 Or add your Scripts directory to PATH and reopen terminal.
+
+If you previously built before pulling updates, delete old artifacts first (`build/`, `dist/`) and rebuild. The script now cleans these automatically.
