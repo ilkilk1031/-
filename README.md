@@ -47,6 +47,8 @@ ppt-renderer --input examples/sample_input.json --output output/sample_deck.pptx
 ### Desktop UI
 ```bash
 ppt-renderer-ui
+# Fallback when PATH is not configured
+python -m ppt_renderer.gui
 ```
 
 Use the UI to add slides, set input/output/reference images, enter prompts, and export PPT.
@@ -112,3 +114,6 @@ See details in `installer/README_INSTALLER.md`.
 
 
 Installer build now includes both CLI and UI standalone bundles under `dist/install/` (`ppt-renderer/` and `ppt-renderer-ui/`).
+
+
+If `ppt-renderer-ui: command not found` appears, run `python -m ppt_renderer.gui` or add your Python Scripts path to PATH.

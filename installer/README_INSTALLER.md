@@ -70,3 +70,10 @@ The spec now falls back to `SPEC` and a default path, then resolves from that lo
 ./dist/install/ppt-renderer-ui/ppt-renderer-ui
 ```
 This launches the desktop UI app directly (no CLI args required).
+
+## Windows PATH issue (`ppt-renderer-ui: command not found`)
+If `ppt-renderer-ui` is not found after install, run module form:
+```bash
+python -m ppt_renderer.gui
+```
+Or add your Scripts directory to PATH and reopen terminal.
