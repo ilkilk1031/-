@@ -47,3 +47,27 @@ def test_resolve_relative_image_paths_keeps_existing_repo_relative_path(tmp_path
     monkeypatch.chdir(repo)
     result = _resolve_relative_image_paths(payload, examples)
     assert result["slides"][0]["elements"][0]["path"] == str(image.resolve())
+
+
+from ppt_renderer.main import generate_ppt
+
+
+def test_generate_ppt_creates_output_directory(tmp_path: Path) -> None:
+    payload = {
+        "slide_size": {"width": 12192000, "height": 6858000},
+        "slides": [
+            {
+                "elements": [
+                    {
+                        "type": "text",
+                        "box": {"x": 0, "y": 0, "width": 2000000, "height": 500000},
+                        "text": "hello",
+                    }
+                ]
+            }
+        ],
+    }
+
+    output = tmp_path / "output" / "sample_deck.pptx"
+    generate_ppt(payload, str(output))
+    assert output.exists()

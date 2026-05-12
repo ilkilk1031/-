@@ -8,7 +8,7 @@ python -m pip install -U pip
 python -m pip install -e .[dev] pyinstaller build
 
 python -m build
-pyinstaller installer/ppt_renderer.spec --noconfirm
+python -m PyInstaller installer/ppt_renderer.spec --noconfirm
 
 mkdir -p dist/install
 cp dist/*.whl dist/install/ || true

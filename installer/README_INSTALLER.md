@@ -41,3 +41,11 @@ If pip prints a warning that `ppt-renderer.exe` is installed in a Scripts direct
 Typical path:
 `C:\\Users\\<YOUR_USER>\\AppData\\Roaming\\Python\\Python3XX\\Scripts`
 
+
+## Windows note (Git Bash)
+If `pyinstaller: command not found` appears, run module form:
+```bash
+python -m PyInstaller installer/ppt_renderer.spec --noconfirm
+```
+
+The build script already uses module form so PATH setup for Scripts is not required.

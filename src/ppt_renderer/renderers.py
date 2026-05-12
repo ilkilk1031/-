@@ -132,4 +132,6 @@ class Renderer:
         for slide_spec in spec.slides:
             self.slide_renderer.render(prs, slide_spec)
 
-        prs.save(output_path)
+        output = Path(output_path)
+        output.parent.mkdir(parents=True, exist_ok=True)
+        prs.save(str(output))
