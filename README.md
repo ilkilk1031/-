@@ -1,48 +1,82 @@
 # Deterministic PPT Rendering Engine
 
-## Architecture
-- `Renderer`: presentation-level orchestration (slide size + multi-slide rendering).
-- `SlideRenderer`: per-slide fixed-coordinate rendering dispatcher.
-- `TextRenderer`: text rendering with wrap + deterministic font autosize heuristic.
-- `ImageRenderer`: image rendering with `contain`, `cover`, `fit` crop modes.
-- `models.py`: strict JSON schema parsing into immutable dataclasses.
+Deterministic JSON-to-PPTX renderer package with Python API, CLI, and FastAPI deployment.
 
-## Folder Structure
+## Quick Start
+
+```bash
+pip install -e .
+ppt-renderer --input examples/sample_input.json --output output/sample_deck.pptx
+```
+
+## Project Structure
+
 ```text
 src/ppt_renderer/
   __init__.py
   main.py
   models.py
   renderers.py
+  schema.py
+  cli.py
+  api.py
 examples/
-  sample_input.json
+tests/
+Dockerfile
+pyproject.toml
 ```
 
-## Design Principles
-- No AI logic.
-- Deterministic rendering.
-- No layout inference; only render incoming coordinates.
-
-## Error Handling Strategy
-- Input schema/type violations raise `ValueError` during parsing.
-- Rendering failures raise `RenderingError` (e.g., missing image, unsupported mode).
-- Fail-fast policy: stop generation on first non-recoverable error.
-
-## Sample JSON Input
-See `examples/sample_input.json`.
-
-## Sample Output
-- Input: `examples/sample_input.json`
-- Output: `output/sample_deck.pptx`
-
 ## Usage
+
+### Python API
 ```python
 from ppt_renderer import generate_ppt_from_file
 
 generate_ppt_from_file("examples/sample_input.json", "output/sample_deck.pptx")
 ```
 
-## Dependencies
+### CLI
 ```bash
-pip install python-pptx pillow
+ppt-renderer --input examples/sample_input.json --output output/sample_deck.pptx
 ```
+
+### FastAPI (local)
+```bash
+uvicorn ppt_renderer.api:app --host 0.0.0.0 --port 8000
+```
+
+### FastAPI (Docker)
+```bash
+docker compose up --build
+```
+
+`POST /generate-ppt` with JSON payload and get `.pptx` response.
+
+## CI
+
+GitHub Actions workflow runs:
+- install (`pip install -e .[dev]`)
+- test (`pytest`)
+
+## Error Handling
+
+- Validation failures raise `ValueError` in schema validation.
+- Rendering failures raise `RenderingError`.
+- API converts exceptions to HTTP 400.
+
+## Dependencies
+
+Defined in `pyproject.toml`:
+- runtime: `python-pptx`, `pillow`, `pydantic`, `fastapi`, `uvicorn`
+- dev: `pytest`, `httpx`
+
+
+## Installer Build
+
+Create distributable installer artifacts:
+
+```bash
+bash installer/build_installer.sh
+```
+
+See details in `installer/README_INSTALLER.md`.

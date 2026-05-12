@@ -4,11 +4,13 @@ import json
 from pathlib import Path
 
 from .models import parse_presentation_spec
+from .schema import validate_payload
 from .renderers import ImageRenderer, Renderer, SlideRenderer, TextRenderer
 
 
 def generate_ppt(json_input: dict, output_path: str) -> None:
-    spec = parse_presentation_spec(json_input)
+    normalized = validate_payload(json_input)
+    spec = parse_presentation_spec(normalized)
     renderer = Renderer(slide_renderer=SlideRenderer(text_renderer=TextRenderer(), image_renderer=ImageRenderer()))
     renderer.render(spec, output_path)
 
