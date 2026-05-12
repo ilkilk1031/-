@@ -109,3 +109,6 @@ bash installer/build_installer.sh
 ```
 
 See details in `installer/README_INSTALLER.md`.
+
+
+Installer build now includes both CLI and UI standalone bundles under `dist/install/` (`ppt-renderer/` and `ppt-renderer-ui/`).

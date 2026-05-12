@@ -6,6 +6,7 @@ Generate distributable installation artifacts for the PPT automation program.
 ## Build outputs
 After running the build script, artifacts are created in `dist/install/`:
 - Python wheel (`*.whl`) for pip installation
+- Standalone executable bundles (`dist/ppt-renderer/`, `dist/ppt-renderer-ui/`) from PyInstaller
 - Standalone executable bundle (`dist/ppt-renderer/`) from PyInstaller
 - Project `README.md`
 
@@ -63,3 +64,9 @@ bash installer/build_installer.sh
 Some PyInstaller runs do not inject `__file__` into the spec namespace.
 The spec now falls back to `SPEC` and a default path, then resolves from that location.
 
+
+### 3) Desktop UI executable
+```bash
+./dist/install/ppt-renderer-ui/ppt-renderer-ui
+```
+This launches the desktop UI app directly (no CLI args required).
