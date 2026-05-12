@@ -6,7 +6,10 @@ Deterministic JSON-to-PPTX renderer package with Python API, CLI, and FastAPI de
 
 ```bash
 pip install -e .
+python examples/create_sample_asset.py
+# If `ppt-renderer` is not found, use the module form below.
 ppt-renderer --input examples/sample_input.json --output output/sample_deck.pptx
+python -m ppt_renderer.cli --input examples/sample_input.json --output output/sample_deck.pptx
 ```
 
 ## Project Structure
@@ -44,6 +47,23 @@ ppt-renderer --input examples/sample_input.json --output output/sample_deck.pptx
 ```bash
 uvicorn ppt_renderer.api:app --host 0.0.0.0 --port 8000
 ```
+
+### CLI (PATH troubleshooting on Windows)
+If you see `ppt-renderer: command not found` after installation, your user Scripts path is not on `PATH`.
+
+Use either option:
+
+1. Run without PATH setup:
+```bash
+python -m ppt_renderer.cli --input examples/sample_input.json --output output/sample_deck.pptx
+```
+
+2. Add this folder to Windows PATH, then reopen terminal:
+```text
+C:\Users\<YOUR_USER>\AppData\Roaming\Python\Python3XX\Scripts
+```
+Replace `Python3XX` with your installed version (for example `Python314`).
+
 
 ### FastAPI (Docker)
 ```bash
