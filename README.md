@@ -43,6 +43,15 @@ generate_ppt_from_file("examples/sample_input.json", "output/sample_deck.pptx")
 ppt-renderer --input examples/sample_input.json --output output/sample_deck.pptx
 ```
 
+
+### Desktop UI
+```bash
+ppt-renderer-ui
+```
+
+Use the UI to add slides, set input/output/reference images, enter prompts, and export PPT.
+
+
 ### FastAPI (local)
 ```bash
 uvicorn ppt_renderer.api:app --host 0.0.0.0 --port 8000

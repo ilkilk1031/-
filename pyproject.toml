@@ -26,6 +26,7 @@ dev = [
 
 [project.scripts]
 ppt-renderer = "ppt_renderer.cli:main"
+ppt-renderer-ui = "ppt_renderer.gui:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}
