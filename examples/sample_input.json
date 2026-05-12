@@ -1,0 +1,48 @@
+{
+  "slide_size": {"width": 12192000, "height": 6858000},
+  "slides": [
+    {
+      "elements": [
+        {
+          "type": "text",
+          "box": {"x": 500000, "y": 300000, "width": 5000000, "height": 900000},
+          "text": "AI Image Generation History Report",
+          "style": {
+            "font_name": "Calibri",
+            "font_size_pt": 36,
+            "bold": true,
+            "color_hex": "1F2937",
+            "align": "left",
+            "valign": "middle",
+            "wrap": true,
+            "auto_fit_font": true,
+            "min_font_size_pt": 20,
+            "max_font_size_pt": 44
+          }
+        },
+        {
+          "type": "image",
+          "box": {"x": 500000, "y": 1500000, "width": 5000000, "height": 3000000},
+          "path": "examples/assets/sample.png",
+          "crop_mode": "cover"
+        }
+      ]
+    },
+    {
+      "elements": [
+        {
+          "type": "text",
+          "box": {"x": 700000, "y": 500000, "width": 4000000, "height": 2000000},
+          "text": "Second slide with deterministic coordinate rendering.",
+          "style": {
+            "font_name": "Arial",
+            "font_size_pt": 24,
+            "align": "justify",
+            "valign": "top",
+            "wrap": true
+          }
+        }
+      ]
+    }
+  ]
+}
