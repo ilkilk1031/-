@@ -1,7 +1,7 @@
 from __future__ import annotations
 
 import json
-from dataclasses import asdict, dataclass, field
+from dataclasses import dataclass, field
 from pathlib import Path
 import tkinter as tk
 from tkinter import filedialog, messagebox
@@ -19,6 +19,49 @@ class SlideForm:
     input_image: str = ""
     output_image: str = ""
     references: list[str] = field(default_factory=list)
+
+
+@dataclass
+class SlideState:
+    slides: list[SlideForm] = field(default_factory=lambda: [SlideForm(title="Slide 1")])
+    current_index: int = 0
+
+    @property
+    def current(self) -> SlideForm:
+        return self.slides[self.current_index]
+
+    def select(self, index: int) -> SlideForm:
+        if index < 0 or index >= len(self.slides):
+            raise IndexError("Slide index out of range")
+        self.current_index = index
+        return self.current
+
+    def next(self) -> SlideForm:
+        if self.current_index < len(self.slides) - 1:
+            self.current_index += 1
+        return self.current
+
+    def prev(self) -> SlideForm:
+        if self.current_index > 0:
+            self.current_index -= 1
+        return self.current
+
+    def add_after_current(self) -> SlideForm:
+        new_slide = SlideForm(title=f"Slide {len(self.slides)+1}")
+        insert_index = self.current_index + 1
+        self.slides.insert(insert_index, new_slide)
+        self.current_index = insert_index
+        return new_slide
+
+    def remove_current(self) -> SlideForm:
+        if len(self.slides) == 1:
+            raise ValueError("At least one slide is required.")
+        del self.slides[self.current_index]
+        self.current_index = min(self.current_index, len(self.slides) - 1)
+        return self.current
+
+    def update_current(self, slide: SlideForm) -> None:
+        self.slides[self.current_index] = slide
 
 
 TEMPLATES = {
@@ -97,12 +140,11 @@ class RendererGUI:
         self.root.title("PPT Renderer UI")
         self.root.geometry("980x680")
 
-        self.slides: list[SlideForm] = [SlideForm(title="Slide 1")]
-        self.current_index = 0
+        self.state = SlideState()
 
         self._build_ui()
         self._refresh_list()
-        self._load_slide_to_form(0)
+        self._load_slide_to_form(self.state.current)
 
     def _build_ui(self) -> None:
         left = tk.Frame(self.root)
@@ -112,11 +154,19 @@ class RendererGUI:
         self.listbox.pack()
         self.listbox.bind("<<ListboxSelect>>", self._on_select_slide)
 
+        nav = tk.Frame(left)
+        nav.pack(fill=tk.X, pady=3)
+        tk.Button(nav, text="◀ Prev", command=self._go_prev).pack(side=tk.LEFT, expand=True, fill=tk.X)
+        tk.Button(nav, text="Next ▶", command=self._go_next).pack(side=tk.LEFT, expand=True, fill=tk.X)
+
         tk.Button(left, text="+ Slide", command=self._add_slide).pack(fill=tk.X, pady=3)
         tk.Button(left, text="- Slide", command=self._remove_slide).pack(fill=tk.X, pady=3)
 
         right = tk.Frame(self.root)
         right.pack(side=tk.LEFT, fill=tk.BOTH, expand=True, padx=8, pady=8)
+
+        self.index_label = tk.Label(right, text="Slide 1 / 1")
+        self.index_label.pack(anchor="w")
 
         self.title_var = tk.StringVar()
         tk.Label(right, text="Title").pack(anchor="w")
@@ -148,19 +198,20 @@ class RendererGUI:
 
     def _refresh_list(self) -> None:
         self.listbox.delete(0, tk.END)
-        for i, s in enumerate(self.slides, start=1):
+        for i, s in enumerate(self.state.slides, start=1):
             name = s.title.strip() or f"Slide {i}"
             self.listbox.insert(tk.END, f"{i}. {name}")
+        self.index_label.config(text=f"Slide {self.state.current_index + 1} / {len(self.state.slides)}")
 
     def _on_select_slide(self, _event=None) -> None:
         if not self.listbox.curselection():
             return
         self._save_current_slide()
-        self.current_index = int(self.listbox.curselection()[0])
-        self._load_slide_to_form(self.current_index)
+        selected_idx = int(self.listbox.curselection()[0])
+        self.state.select(selected_idx)
+        self._load_slide_to_form(self.state.current)
 
-    def _load_slide_to_form(self, idx: int) -> None:
-        slide = self.slides[idx]
+    def _load_slide_to_form(self, slide: SlideForm) -> None:
         self.title_var.set(slide.title)
         self.input_var.set(slide.input_image)
         self.output_var.set(slide.output_image)
@@ -169,34 +220,44 @@ class RendererGUI:
         self.prompt_text.delete("1.0", tk.END)
         self.prompt_text.insert("1.0", slide.prompt)
         self.listbox.selection_clear(0, tk.END)
-        self.listbox.selection_set(idx)
+        self.listbox.selection_set(self.state.current_index)
+        self._refresh_list()
 
-    def _save_current_slide(self) -> None:
+    def _collect_form(self) -> SlideForm:
         refs = [line.strip() for line in self.refs_text.get("1.0", tk.END).splitlines() if line.strip()]
-        self.slides[self.current_index] = SlideForm(
+        return SlideForm(
             title=self.title_var.get().strip(),
             prompt=self.prompt_text.get("1.0", tk.END).strip(),
             input_image=self.input_var.get().strip(),
             output_image=self.output_var.get().strip(),
             references=refs[:3],
         )
+
+    def _save_current_slide(self) -> None:
+        self.state.update_current(self._collect_form())
         self._refresh_list()
+
+    def _go_prev(self) -> None:
+        self._save_current_slide()
+        self.state.prev()
+        self._load_slide_to_form(self.state.current)
+
+    def _go_next(self) -> None:
+        self._save_current_slide()
+        self.state.next()
+        self._load_slide_to_form(self.state.current)
 
     def _add_slide(self) -> None:
         self._save_current_slide()
-        self.slides.append(SlideForm(title=f"Slide {len(self.slides)+1}"))
-        self.current_index = len(self.slides) - 1
-        self._refresh_list()
-        self._load_slide_to_form(self.current_index)
+        self.state.add_after_current()
+        self._load_slide_to_form(self.state.current)
 
     def _remove_slide(self) -> None:
-        if len(self.slides) == 1:
-            messagebox.showwarning("Warning", "At least one slide is required.")
-            return
-        del self.slides[self.current_index]
-        self.current_index = max(0, self.current_index - 1)
-        self._refresh_list()
-        self._load_slide_to_form(self.current_index)
+        try:
+            self.state.remove_current()
+            self._load_slide_to_form(self.state.current)
+        except ValueError as exc:
+            messagebox.showwarning("Warning", str(exc))
 
     def _pick_file(self, target_var: tk.StringVar) -> None:
         path = filedialog.askopenfilename(title="Select image", filetypes=[("Image Files", "*.png;*.jpg;*.jpeg;*.webp")])
@@ -205,7 +266,7 @@ class RendererGUI:
 
     def _export_json(self) -> None:
         self._save_current_slide()
-        payload = build_payload(self.slides)
+        payload = build_payload(self.state.slides)
         out = filedialog.asksaveasfilename(defaultextension=".json", filetypes=[("JSON", "*.json")])
         if not out:
             return
@@ -218,7 +279,7 @@ class RendererGUI:
         if not output:
             return
         try:
-            payload = build_payload(self.slides)
+            payload = build_payload(self.state.slides)
             generate_ppt(payload, output)
             messagebox.showinfo("Success", f"Generated: {output}")
         except Exception as exc:
